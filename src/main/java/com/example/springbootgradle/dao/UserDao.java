@@ -8,22 +8,10 @@ import java.util.Map;
 import static java.lang.System.getenv;
 
 public abstract class UserDao {
-    public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
-//    {
-//        Map<String, String> env = getenv();
-//        String dbHost = env.get("DB_HOST");
-//        String dbUser = env.get("DB_USER");
-//        String dbPassword = env.get("DB_PASSWORD");
-//
-//        Class.forName("com.mysql.cj.jdbc.Driver");
-//        Connection conn = DriverManager.getConnection(
-//                dbHost, dbUser, dbPassword
-//        );
-//        return conn;
-//    }
+    SimpleConnectionMaker connctionMaker = new SimpleConnectionMaker();
 
     public void add(User user) throws ClassNotFoundException, SQLException {
-        Connection conn = getConnection();
+        Connection conn = connctionMaker.makeNewConnection();
 
         PreparedStatement pstmt = conn.prepareStatement("insert into users(id, name, password) values(?, ?, ?)");
         pstmt.setString(1, user.getID());
@@ -37,7 +25,7 @@ public abstract class UserDao {
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
-        Connection conn = getConnection();
+        Connection conn = connctionMaker.makeNewConnection();
 
         PreparedStatement pstmt = conn.prepareStatement("select id, name, password from users where id = ?");
         pstmt.setString(1, id);
@@ -59,12 +47,12 @@ public abstract class UserDao {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         UserDao userDao = new NUserDao();
         User user = new User();
-        user.setID("4");
+        user.setID("5");
         user.setName("hanihani");
         user.setPassword("1234");
         userDao.add(user);
 
-        User selectedUser = userDao.get("4");
+        User selectedUser = userDao.get("5");
         System.out.println(selectedUser.getID());
         System.out.println(selectedUser.getName());
         System.out.println(selectedUser.getPassword());
