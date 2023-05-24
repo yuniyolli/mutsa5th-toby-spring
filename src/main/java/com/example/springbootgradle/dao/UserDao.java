@@ -7,14 +7,14 @@ import java.util.Map;
 
 import static java.lang.System.getenv;
 
-public abstract class UserDao {
+public class UserDao {
 
 
     ConnectionMaker connectionMaker;
     //SimpleConnectionMaker connctionMaker = new SimpleConnectionMaker();
 
-    public UserDao() {
-        this.connectionMaker = new DConnectionMaker();
+    public UserDao(ConnectionMaker connectionMaker){
+        this.connectionMaker = connectionMaker;
     }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
@@ -53,14 +53,15 @@ public abstract class UserDao {
     }
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        UserDao userDao = new NUserDao();
+        ConnectionMaker cm = new DConnectionMaker();
+        UserDao userDao = new UserDao(cm);
         User user = new User();
-        user.setID("7");
-        user.setName("durian");
+        user.setID("8");
+        user.setName("mango");
         user.setPassword("12345");
         userDao.add(user);
 
-        User selectedUser = userDao.get("7");
+        User selectedUser = userDao.get("8");
         System.out.println(selectedUser.getID());
         System.out.println(selectedUser.getName());
         System.out.println(selectedUser.getPassword());
